@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artworks – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="flashContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Artworks');
+
+  const params = new URLSearchParams(location.search);
+  let search = params.get('search')||'';
+  let category = params.get('category')||'';
+  let sort = params.get('sort')||'newest';
+
+  let items = SEED.artworks.map(a=>({...a, artist: SEED.artists.find(x=>x.id===a.artist_id)}));
+  if(search){
+    const s=search.toLowerCase();
+    items = items.filter(a=>a.title.toLowerCase().includes(s) || a.artist.name.toLowerCase().includes(s));
+  }
+  if(category) items = items.filter(a=>a.category===category);
+  if(sort==='price_asc') items.sort((a,b)=>a.price-b.price);
+  else if(sort==='price_desc') items.sort((a,b)=>b.price-a.price);
+  else items.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+
+  const categories = [...new Set(SEED.artworks.map(a=>a.category))];
+
+  function card(a){
+    return `<article class="card card--artwork reveal"><div class="card__image"><img src="${AR.imageUrl(a.image,'artworks')}" alt="${AR.escapeHtml(a.title)}" loading="lazy"><span class="card__badge">${AR.escapeHtml(a.category)}</span></div><div class="card__content"><h3 class="card__title">${AR.escapeHtml(a.title)}</h3><p class="card__artist">by ${AR.escapeHtml(a.artist.name)}</p><p class="card__price">${AR.fmtPrice(a.price)}</p><a href="artwork.html?id=${a.id}" class="btn btn--small btn--outline">View Artwork</a></div></article>`;
+  }
+
+  const offset = parseInt(params.get('offset')||'0',10);
+  const perPage = 6;
+  const page = items.slice(offset, offset+perPage);
+
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <header class="page__header"><h1 class="page__title">A Gallery of Inspiration</h1><p class="page__subtitle">Discover Warli, Gond, Madhubani, Mandala, Landscape and Abstract art.</p></header>
+    <div class="gallery__toolbar">
+      <form class="toolbar__search" id="searchForm" role="search"><input type="search" name="search" placeholder="Search by title or artist…" value="${AR.escapeHtml(search)}"><button type="submit" class="btn btn--small"><i class="fas fa-search"></i></button></form>
+      <form id="filterForm" style="display:flex;gap:0.5rem;align-items:center;">
+        <input type="hidden" name="search" value="${AR.escapeHtml(search)}">
+        <label class="toolbar__label">Category</label>
+        <select name="category" class="toolbar__select">${categories.map(c=>`<option value="${c}" ${category===c?'selected':''}>${AR.escapeHtml(c)}</option>`).join('')}</select>
+        <label class="toolbar__label">Sort</label>
+        <select name="sort" class="toolbar__select"><option value="newest" ${sort==='newest'?'selected':''}>Newest first</option><option value="price_asc" ${sort==='price_asc'?'selected':''}>Price: low to high</option><option value="price_desc" ${sort==='price_desc'?'selected':''}>Price: high to low</option></select>
+      </form>
+    </div>
+    <div class="grid grid--artworks" id="artworksGrid">${page.map(card).join('')}</div>
+    ${offset+perPage<items.length?`<div style="text-align:center;margin-top:1.5rem;"><a href="artworks.html?offset=${offset+perPage}&search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}&sort=${encodeURIComponent(sort)}" class="btn btn--outline">Load more</a></div>`:''}
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+
+  document.getElementById('filterForm').onsubmit=function(e){
+    e.preventDefault();
+    const fd = new FormData(this);
+    location='artworks.html?'+new URLSearchParams(fd).toString();
+  };
+  document.getElementById('searchForm').onsubmit=function(e){
+    e.preventDefault();
+    const fd = new FormData(this);
+    fd.append('category',category); fd.append('sort',sort);
+    location='artworks.html?'+new URLSearchParams(fd).toString();
+  };
+})();
+</script>
+</body>
+</html>

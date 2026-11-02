@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Bookings – Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin">
+<div id="adminShell"></div>
+<script src="../assets/js/data.js"></script>
+<script>
+(function(){
+  const u = JSON.parse(localStorage.getItem('ar_session')||'null');
+  if(!u || u.role!=='admin'){ location='login.html'; return; }
+  const shell=document.getElementById('adminShell');
+  const bookings = JSON.parse(localStorage.getItem('ar_bookings')||'[]');
+  const users = JSON.parse(localStorage.getItem('ar_users')||'[]');
+  shell.innerHTML=`
+  <div class="admin__wrapper">
+    <aside class="admin__sidebar"><h2>The Artisan's Room</h2><ul>
+      <li><a href="index.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="artworks.html"><i class="fas fa-palette"></i> Artworks</a></li>
+      <li><a href="artists.html"><i class="fas fa-user"></i> Artists</a></li>
+      <li><a href="exhibitions.html"><i class="fas fa-calendar"></i> Exhibitions</a></li>
+      <li><a href="tutorials.html"><i class="fas fa-book"></i> Tutorials</a></li>
+      <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+      <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="bookings.html" class="active"><i class="fas fa-ticket-alt"></i> Bookings</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="logout.html" style="color:#ffb3b3;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul></aside>
+    <main class="admin__main">
+      <header class="admin__header"><h1>Manage Bookings</h1><a href="logout.html" class="admin__btn" style="background:#b32323;"><i class="fas fa-sign-out-alt"></i> Logout</a></header>
+      <table class="admin__table"><thead><tr><th>User</th><th>Exhibition</th><th>Tickets</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+      ${bookings.map(b=>{const usr=users.find(x=>x.id===b.user_id); const ex=SEED.exhibitions.find(x=>x.id===b.exhibition_id);return `<tr><td>${usr?usr.name:''}</td><td>${ex?ex.name:''}</td><td>${b.tickets}</td><td>₹${Number(b.total_amount).toFixed(2)}</td><td><span style="background:#eef4fb;color:#2a69ac;padding:0.25rem 0.6rem;border-radius:10px;font-size:0.75rem;">${b.status}</span></td><td>${new Date(b.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</td><td><button class="btn--admin btn--admin--delete" onclick="if(confirm('Delete?')){const l=JSON.parse(localStorage.getItem('ar_bookings')||'[]');const nl=l.filter(x=>x.id!==${b.id});localStorage.setItem('ar_bookings',JSON.stringify(nl));location.reload();}">Delete</button></td></tr>`;}).join('')}
+      </tbody></table>
+    </main>
+  </div>
+  `;
+})();
+</script>
+</body>
+</html>

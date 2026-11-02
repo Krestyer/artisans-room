@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artwork Form – Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin">
+<div id="adminShell"></div>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/common.js"></script>
+<script>
+(function(){
+  const u = JSON.parse(localStorage.getItem('ar_session')||'null');
+  if(!u || u.role!=='admin'){ location='login.html'; return; }
+  const shell=document.getElementById('adminShell');
+  const id = parseInt(new URLSearchParams(location.search).get('id')||'0',10);
+  const artworks = JSON.parse(localStorage.getItem('ar_artworks')||JSON.stringify(SEED.artworks));
+  const item = artworks.find(x=>x.id===id) || null;
+  const categories = ['Warli','Gond','Madhubani','Mandala','Landscape','Abstract'];
+
+  shell.innerHTML=`
+  <div class="admin__wrapper">
+    <aside class="admin__sidebar"><h2>The Artisan's Room</h2><ul>
+      <li><a href="index.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="artworks.html" class="active"><i class="fas fa-palette"></i> Artworks</a></li>
+      <li><a href="artists.html"><i class="fas fa-user"></i> Artists</a></li>
+      <li><a href="exhibitions.html"><i class="fas fa-calendar"></i> Exhibitions</a></li>
+      <li><a href="tutorials.html"><i class="fas fa-book"></i> Tutorials</a></li>
+      <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+      <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="bookings.html"><i class="fas fa-ticket-alt"></i> Bookings</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="logout.html" style="color:#ffb3b3;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul></aside>
+    <main class="admin__main">
+      <header class="admin__header"><h1>${item?'Edit':'Add'} Artwork</h1><a href="artworks.html" class="admin__btn">Back</a></header>
+      <form id="f" class="form--admin" novalidate>
+        <div class="form__group"><label class="form__label">Artist</label><select name="artist_id" class="form__input" required>${SEED.artists.map(x=>`<option value="${x.id}" ${(item?item.artist_id:'')==x.id?'selected':''}>${x.name}</option>`).join('')}</select></div>
+        <div class="form__group"><label class="form__label">Title</label><input type="text" name="title" class="form__input" value="${item?item.title:''}" required></div>
+        <div class="form__row"><div class="form__col"><div class="form__group"><label class="form__label">Category</label><select name="category" class="form__input" required>${categories.map(c=>`<option value="${c}" ${(item?item.category:'')===c?'selected':''}>${c}</option>`).join('')}</select></div></div><div class="form__col"><div class="form__group"><label class="form__label">Price (₹)</label><input type="number" name="price" class="form__input" step="0.01" min="0" value="${item?item.price:''}" required></div></div></div>
+        <div class="form__group"><label class="form__label">Description</label><textarea name="description" class="form__input" rows="4">${item?item.description:''}</textarea></div>
+        <div class="form__group"><label style="display:flex;align-items:center;gap:0.5rem;font-weight:600;"><input type="checkbox" name="is_for_sale" ${(item?item.is_for_sale:1)?'checked':''}> For sale</label></div>
+        <div class="form__group"><label style="display:flex;align-items:center;gap:0.5rem;font-weight:600;"><input type="checkbox" name="featured" ${item?item.featured:''?'checked':''}> Featured</label></div>
+        <button type="submit" class="btn--admin btn--admin--save">${item?'Update':'Add'} Artwork</button><a href="artworks.html" class="btn--admin">Cancel</a>
+      </form>
+    </main>
+  </div>
+  `;
+  document.getElementById('f').onsubmit=function(ev){
+    ev.preventDefault();
+    const fd=new FormData(this);
+    const rec = { id: item?item.id:Date.now(), artist_id:parseInt(fd.get('artist_id'),10), title:fd.get('title'), category:fd.get('category'), description:fd.get('description'), price:parseFloat(fd.get('price')), is_for_sale:fd.get('is_for_sale')?1:0, featured:fd.get('featured')?1:0, image: item?item.image:'placeholder.svg', created_at: item?item.created_at:new Date().toISOString() };
+    const list = item? artworks.map(x=>x.id===id?rec:x) : [...artworks, rec];
+    localStorage.setItem('ar_artworks', JSON.stringify(list));
+    location='artworks.html';
+  };
+})();
+</script>
+</body>
+</html>

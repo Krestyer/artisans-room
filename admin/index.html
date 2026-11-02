@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="admin">
+<div id="adminShell"></div>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/common.js"></script>
+<script>
+(function(){
+  const u = JSON.parse(localStorage.getItem('ar_session')||'null');
+  if(!u || u.role!=='admin'){ location='login.html'; return; }
+  const shell=document.getElementById('adminShell');
+  shell.innerHTML=`
+  <div class="admin__wrapper">
+    <aside class="admin__sidebar"><h2>The Artisan's Room</h2><ul>
+      <li><a href="index.html" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+      <li><a href="artworks.html"><i class="fas fa-palette"></i> Artworks</a></li>
+      <li><a href="artists.html"><i class="fas fa-user"></i> Artists</a></li>
+      <li><a href="exhibitions.html"><i class="fas fa-calendar"></i> Exhibitions</a></li>
+      <li><a href="tutorials.html"><i class="fas fa-book"></i> Tutorials</a></li>
+      <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+      <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="bookings.html"><i class="fas fa-ticket-alt"></i> Bookings</a></li>
+      <li><a href="messages.html"><i class="fas fa-envelope"></i> Messages</a></li>
+      <li><a href="logout.html" style="color:#ffb3b3;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul></aside>
+    <main class="admin__main">
+      <header class="admin__header"><h1>Dashboard</h1><a href="../index.html" class="admin__btn"><i class="fas fa-home"></i> View Site</a><a href="logout.html" class="admin__btn" style="background:#b32323;"><i class="fas fa-sign-out-alt"></i> Logout</a></header>
+      <div class="admin__grid">
+        <div class="admin__stat"><div><div class="stat__num">${SEED.users.length}</div><div class="stat__label">Users</div></div><div style="font-size:2rem;color:#666;"><i class="fas fa-users"></i></div></div>
+        <div class="admin__stat"><div><div class="stat__num">${SEED.artists.length}</div><div class="stat__label">Artists</div></div><div style="font-size:2rem;color:#666;"><i class="fas fa-user"></i></div></div>
+        <div class="admin__stat"><div><div class="stat__num">${SEED.artworks.length}</div><div class="stat__label">Artworks</div></div><div style="font-size:2rem;color:#666;"><i class="fas fa-palette"></i></div></div>
+        <div class="admin__stat"><div><div class="stat__num">${SEED.exhibitions.length}</div><div class="stat__label">Exhibitions</div></div><div style="font-size:2rem;color:#666;"><i class="fas fa-calendar"></i></div></div>
+        <div class="admin__stat"><div><div class="stat__num">${JSON.parse(localStorage.getItem('ar_orders')||'[]').length}</div><div class="stat__label">Orders</div></div><div style="font-size:2rem;color:#666;"><i class="fas fa-shopping-bag"></i></div></div>
+        <div class="admin__stat"><div><div class="stat__num">${JSON.parse(localStorage.getItem('ar_bookings')||'[]').length}</div><div class="stat__label">Bookings</div></div><div style="font-size:2rem;color:#666;"><i class="fas fa-ticket-alt"></i></div></div>
+      </div>
+    </main>
+  </div>
+  `;
+})();
+</script>
+</body>
+</html>

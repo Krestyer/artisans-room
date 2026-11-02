@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artist Profile – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Artist Profile');
+
+  const id = parseInt(new URLSearchParams(location.search).get('id')||'0',10);
+  const ar = SEED.artists.find(x=>x.id===id);
+  if(!ar){ main.innerHTML='<div class="container"><h1>Not Found</h1><p>Artist not found.</p><p><a href="artists.html">Go to artists</a></p></div>'; AR.renderFooter(footer); return; }
+  const works = SEED.artworks.filter(x=>x.artist_id===id);
+
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <div class="profile__layout">
+      <div class="profile__header">
+        <img src="${AR.imageUrl(ar.photo,'artists')}" alt="${AR.escapeHtml(ar.name)}" class="profile__photo" loading="lazy">
+        <div class="profile__text">
+          <h1 class="profile__name">${AR.escapeHtml(ar.name)}</h1>
+          <p class="profile__style">${AR.escapeHtml(ar.art_style)}</p>
+          <p class="profile__bio">${AR.escapeHtml(ar.bio)}</p>
+          ${ar.achievements?'<p class="profile__achievements"><strong>Achievements:</strong> '+AR.escapeHtml(ar.achievements)+'</p>':''}
+        </div>
+      </div>
+      <h2 class="section__title" style="margin-top:2.5rem;">Their Artworks</h2>
+      ${works.length?`<div class="grid grid--artworks">${works.map(w=>`<article class="card card--artwork"><div class="card__image"><img src="${AR.imageUrl(w.image,'artworks')}" alt="${AR.escapeHtml(w.title)}" loading="lazy"><span class="card__badge">${AR.escapeHtml(w.category)}</span></div><div class="card__content"><h3 class="card__title">${AR.escapeHtml(w.title)}</h3><p class="card__price">${AR.fmtPrice(w.price)}</p><a href="artwork.html?id=${w.id}" class="btn btn--small btn--outline">View Artwork</a></div></article>`).join('')}</div>`:'<p class="text-muted">No artworks listed yet.</p>'}
+    </div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+})();
+</script>
+</body>
+</html>

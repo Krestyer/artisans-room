@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="0; url=signin.html">
+<title>Signing out…</title>
+</head>
+<body>
+<p>Signing out… <a href="signin.html">click here if not redirected</a></p>
+<script>
+(function(){
+  localStorage.removeItem('ar_session');
+  location='signin.html';
+})();
+</script>
+</body>
+</html>

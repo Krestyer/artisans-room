@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmed – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Order Confirmed');
+
+  const id = parseInt(new URLSearchParams(location.search).get('id')||'0',10);
+  const user = AR.currentUser();
+  const orders = AR.get('ar_orders',[]);
+  const o = orders.find(x=>x.id===id && (!user || x.user_id===user.id));
+  if(!o){ main.innerHTML='<div class="container"><div class="success__card"><div class="success__icon"><i class="fas fa-exclamation-circle"></i></div><h1 class="success__title">Order not found</h1><p><a href="dashboard.html">Go to Dashboard</a></p></div></div>'; AR.renderFooter(footer); return; }
+
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <div class="success__card">
+      <div class="success__icon"><i class="fas fa-check-circle"></i></div>
+      <h1 class="success__title">Order Confirmed!</h1>
+      <p class="success__message">Thank you for shopping with The Artisan's Room.</p>
+      <div class="success__meta">
+        <p><strong>Order Number:</strong> #${String(o.id).padStart(6,'0')}</p>
+        <p><strong>Date:</strong> ${new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</p>
+        <p><strong>Payment Method:</strong> ${o.payment_method}</p>
+        <p><strong>Status:</strong> <span class="badge" style="background:#e9f7ef;color:#1e7a46;padding:0.25rem 0.6rem;border-radius:10px;font-size:0.75rem;">${o.status}</span></p>
+        <p><strong>Total:</strong> ${AR.fmtPrice(o.total_amount)}</p>
+      </div>
+      <h3>Order Items</h3>
+      <div class="success__items">${o.items.map(i=>`<div class="success__item"><span>${AR.escapeHtml(i.name)} × ${i.qty}</span><span class="text-right">${AR.fmtPrice(i.price*i.qty)}</span></div>`).join('')}</div>
+      <a href="dashboard.html" class="btn btn--primary">Go to Dashboard</a>
+      <a href="index.html" class="btn btn--outline">Continue Shopping</a>
+    </div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+})();
+</script>
+</body>
+</html>

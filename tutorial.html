@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Tutorial');
+
+  const id = parseInt(new URLSearchParams(location.search).get('id')||'0',10);
+  const t = SEED.tutorials.find(x=>x.id===id);
+  if(!t){ main.innerHTML='<div class="container"><h1>Not Found</h1><p>Tutorial not found.</p><p><a href="tutorials.html">Go to tutorials</a></p></div>'; AR.renderFooter(footer); return; }
+
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <div class="tutorial__layout">
+      <div class="tutorial__video">
+        <img src="${AR.imageUrl(t.image,'exhibitions')}" alt="${AR.escapeHtml(t.title)}" class="tutorial__thumb" loading="lazy">
+        ${t.video_url?`<div class="tutorial__embed"><iframe src="${t.video_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`:''}
+      </div>
+      <div class="tutorial__content">
+        <h1 class="detail__title">${AR.escapeHtml(t.title)}</h1>
+        <div class="tutorial__body">${t.content}</div>
+        <a href="tutorials.html" class="btn btn--outline btn--small">Back to Tutorials</a>
+      </div>
+    </div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+})();
+</script>
+</body>
+</html>

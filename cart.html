@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="flashContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Cart');
+  AR.showFlashes('flashContainer');
+
+  const cart = AR.getCart();
+  function render(){
+    if(!cart.length){
+      main.innerHTML=`
+      <section class="section"><div class="container"><div class="empty-state"><i class="fas fa-shopping-cart"></i><h2>Your cart is empty</h2><p>Start shopping from the gallery or shop.</p><a href="artworks.html" class="btn btn--primary">Browse Artworks</a><a href="shop.html" class="btn btn--outline">Browse Shop</a></div></div></section>`;
+    } else {
+      let subtotal=0;
+      const rows = cart.map((c,i)=>{ subtotal += Number(c.price||0)*(c.qty||1); return `<tr><td><div class="cart__row"><img src="${AR.imageUrl(c.image, c.type==='product'?'products':'artworks')}" alt="${AR.escapeHtml(c.name)}" class="cart__thumb" loading="lazy"><div class="cart__row-info"><strong>${AR.escapeHtml(c.name)}</strong><p class="text-muted small">${c.type==='product'?'Product':'Artwork'}</p></div></div></td><td class="text-right">${AR.fmtPrice(c.price)}</td><td class="text-center"><form class="cart__qty-form" style="display:inline;"><input type="number" name="qty" value="${c.qty||1}" min="1" class="form__input form__input--small" data-i="${i}"></form></td><td class="text-right">${AR.fmtPrice(Number(c.price||0)*(c.qty||1))}</td><td class="text-center"><form style="display:inline;" onsubmit="return confirm('Remove this item?')"><button type="submit" class="btn btn--outline btn--small" data-remove="${i}"><i class="fas fa-trash"></i></button></form></td></tr>`; }).join('');
+      main.innerHTML=`
+      <section class="section"><div class="container"><header class="page__header"><h1 class="page__title">Your Cart</h1></header>
+      <div class="cart__layout"><div class="cart__items"><table class="cart__table"><thead><tr><th>Item</th><th class="text-right">Price</th><th class="text-center">Qty</th><th class="text-right">Total</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><div class="cart__summary"><div class="summary__card"><h3>Order Summary</h3><div class="summary__row"><span>Subtotal</span><span class="text-right">${AR.fmtPrice(subtotal)}</span></div><div class="summary__row"><span>Shipping</span><span class="text-right">Free</span></div><div class="summary__row summary__total"><span>Total</span><span class="text-right">${AR.fmtPrice(subtotal)}</span></div><a href="checkout.html" class="btn btn--primary btn--large w-full">Proceed to Checkout</a></div></div></div>
+      </div></section>`;
+    }
+    AR.renderFooter(footer);
+    cart.querySelectorAll('button[data-remove]').forEach(b=>{ b.onclick=function(ev){ ev.preventDefault(); AR.removeAt(parseInt(this.dataset.remove,10)); AR.flash('success','Item removed.'); render(); }; });
+    cart.querySelectorAll('input[name="qty"]').forEach(inp=>{ inp.onchange=function(){ AR.setQty(parseInt(this.dataset.i,10), parseInt(this.value,10)); AR.flash('success','Cart updated.'); render(); }; });
+  }
+  render();
+})();
+</script>
+</body>
+</html>

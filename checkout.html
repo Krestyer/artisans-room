@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="flashContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Checkout');
+  AR.showFlashes('flashContainer');
+
+  const user = AR.currentUser();
+  if(!user){ AR.flash('error','Please sign in to checkout.'); location='signin.html'; return; }
+  const cart = AR.getCart();
+  if(!cart.length){ AR.flash('error','Your cart is empty.'); location='cart.html'; return; }
+  const subtotal = cart.reduce((s,i)=>s+Number(i.price||0)*(i.qty||1),0);
+
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <header class="page__header"><h1 class="page__title">Checkout</h1><p class="page__subtitle">Review your order and complete the purchase.</p></header>
+    <div class="checkout__layout">
+      <div class="checkout__form">
+        <form id="checkoutForm" class="form" novalidate>
+          <div class="form__group"><label class="form__label">Full Name <span class="required">*</span></label><input type="text" name="shipping_name" class="form__input" value="${AR.escapeHtml(user.name||'')}" required></div>
+          <div class="form__group"><label class="form__label">Phone <span class="required">*</span></label><input type="tel" name="phone" class="form__input" value="${AR.escapeHtml(user.phone||'')}" required></div>
+          <div class="form__group"><label class="form__label">Address <span class="required">*</span></label><textarea name="address" class="form__input" rows="3" required></textarea></div>
+          <div class="form__row">
+            <div class="form__col"><div class="form__group"><label class="form__label">City <span class="required">*</span></label><input type="text" name="city" class="form__input" required></div></div>
+            <div class="form__col"><div class="form__group"><label class="form__label">Pincode <span class="required">*</span></label><input type="text" name="pincode" class="form__input" required></div></div>
+          </div>
+          <div class="form__group"><label class="form__label">Payment Method <span class="required">*</span></label><div class="payment__options">
+            <label class="payment__option"><input type="radio" name="payment_method" value="COD" checked><span>Cash on Delivery (COD)</span></label>
+            <label class="payment__option"><input type="radio" name="payment_method" value="UPI"><span>UPI / GPay (simulated)</span></label>
+            <label class="payment__option"><input type="radio" name="payment_method" value="Card"><span>Credit/Debit Card (simulated)</span></label>
+          </div><p class="text-muted small">No real card numbers are stored. Payment is simulated.</p></div>
+          <div class="order__preview"><h4>Order Preview</h4>${cart.map(i=>`<div class="order__item"><span>${AR.escapeHtml(i.name)} × ${i.qty||1}</span><span class="text-right">${AR.fmtPrice(Number(i.price||0)*(i.qty||1))}</span></div>`).join('')}<div class="order__item order__item--total"><span>Total</span><span class="text-right">${AR.fmtPrice(subtotal)}</span></div></div>
+          <button type="submit" class="btn btn--primary btn--large w-full">Place Order</button>
+        </form>
+      </div>
+    </div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+
+  document.getElementById('checkoutForm').onsubmit=function(ev){
+    ev.preventDefault();
+    const fd = new FormData(this);
+    const order = {
+      id: Date.now(), user_id: user.id, total_amount: subtotal, payment_method: fd.get('payment_method'),
+      status: 'Pending', shipping_name: fd.get('shipping_name'), phone: fd.get('phone'), address: fd.get('address'),
+      city: fd.get('city'), pincode: fd.get('pincode'), created_at: new Date().toISOString(),
+      items: cart.map(i=>({type:i.type, item_id:i.id, name:i.name, price:i.price, qty:i.qty}))
+    };
+    const orders = AR.get('ar_orders',[]); orders.push(order); AR.set('ar_orders',orders);
+    AR.set('ar_cart',[]);
+    AR.flash('success','Order placed successfully!');
+    location='order-success.html?id='+order.id;
+  };
+})();
+</script>
+</body>
+</html>

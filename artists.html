@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artists – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Artists');
+
+  function card(ar){
+    const n = SEED.artworks.filter(x=>x.artist_id===ar.id).length;
+    return `<article class="card card--artist reveal"><div class="card__image"><img src="${AR.imageUrl(ar.photo,'artists')}" alt="${AR.escapeHtml(ar.name)}" loading="lazy"></div><div class="card__content"><h3 class="card__title">${AR.escapeHtml(ar.name)}</h3><p class="card__artist">${AR.escapeHtml(ar.art_style)}</p><p class="card__excerpt">${AR.truncate(ar.bio,80)}</p><p class="text-muted small">${n} artwork(s)</p><a href="artist-profile.html?id=${ar.id}" class="btn btn--small btn--outline">View Profile</a></div></article>`;
+  }
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <header class="page__header"><h1 class="page__title">Discover Our Artists</h1><p class="page__subtitle">Meet the creators behind Warli, Gond, Madhubani, Mandala, Landscape and Abstract art.</p></header>
+    <div class="grid grid--artists">${SEED.artists.map(card).join('')}</div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+})();
+</script>
+</body>
+</html>

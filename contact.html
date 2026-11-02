@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="flashContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Contact Us');
+  AR.showFlashes('flashContainer');
+
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <header class="page__header"><h1 class="page__title">Contact Us</h1><p class="page__subtitle">Have a question? Send us a message.</p></header>
+    <div class="contact__layout">
+      <div class="contact__form">
+        <form id="contactForm" class="form" novalidate>
+          <div class="form__group"><label class="form__label">Name <span class="required">*</span></label><input type="text" name="name" class="form__input" required></div>
+          <div class="form__group"><label class="form__label">Email <span class="required">*</span></label><input type="email" name="email" class="form__input" required></div>
+          <div class="form__group"><label class="form__label">Subject <span class="required">*</span></label><input type="text" name="subject" class="form__input" required></div>
+          <div class="form__group"><label class="form__label">Message <span class="required">*</span></label><textarea name="message" class="form__input" rows="5" required></textarea></div>
+          <button type="submit" class="btn btn--primary btn--large w-full">Send Message</button>
+        </form>
+      </div>
+      <div class="contact__info">
+        <h3>Visit Us</h3><p>The Artisan's Room<br>Online Art Gallery<br>India</p>
+        <h3>Email</h3><p>contact@artisansroom.com</p>
+        <h3>Follow</h3><div class="footer__social" style="justify-content:flex-start;gap:1rem;">
+          <a href="javascript:void(0);" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="javascript:void(0);" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="javascript:void(0);" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+
+  document.getElementById('contactForm').onsubmit=function(ev){
+    ev.preventDefault();
+    const fd = new FormData(this);
+    const m = {id:Date.now(), name:fd.get('name'), email:fd.get('email'), subject:fd.get('subject'), message:fd.get('message'), created_at:new Date().toISOString()};
+    const msgs = AR.get('ar_messages',[]); msgs.push(m); AR.set('ar_messages',msgs);
+    AR.flash('success','Thank you! Your message has been sent.');
+    location='contact.html';
+  };
+})();
+</script>
+</body>
+</html>

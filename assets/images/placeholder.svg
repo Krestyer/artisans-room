@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#e8e0d4"/>
+  <text x="200" y="150" font-family="Playfair Display, serif" font-size="24" fill="#b8862f" text-anchor="middle" font-weight="bold">Image Placeholder</text>
+  <text x="200" y="180" font-family="Poppins, sans-serif" font-size="14" fill="#666666" text-anchor="middle">Add real images to assets/images/</text>
+</svg>

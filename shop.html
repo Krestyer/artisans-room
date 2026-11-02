@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="flashContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Shop');
+  AR.showFlashes('flashContainer');
+
+  const params = new URLSearchParams(location.search);
+  let search = params.get('search')||'';
+  let category = params.get('category')||'';
+
+  let items = SEED.products.filter(p=>{ if(search&&!p.name.toLowerCase().includes(search.toLowerCase()))return false; if(category&&p.category!==category)return false; return true; });
+  const categories = [...new Set(SEED.products.map(p=>p.category))];
+
+  function card(p){
+    return `<article class="card card--shop reveal"><div class="card__image"><img src="${AR.imageUrl(p.image,'products')}" alt="${AR.escapeHtml(p.name)}" loading="lazy"></div><div class="card__content"><h3 class="card__title">${AR.escapeHtml(p.name)}</h3><p class="card__category">${AR.escapeHtml(p.category)}</p><p class="card__price">${AR.fmtPrice(p.price)}</p>
+      ${p.stock>0?`<form id="add${p.id}" class="card__add"><input type="hidden" name="id" value="${p.id}"><button type="submit" class="btn btn--small btn--outline">Add to Cart</button></form>`:'<span class="btn btn--small" style="opacity:.6">Out of stock</span>'}</div></article>`;
+  }
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <header class="page__header"><h1 class="page__title">Online Shop</h1><p class="page__subtitle">Art-inspired products: tote bags, notebooks, candles, prints and more.</p></header>
+    <div class="gallery__toolbar">
+      <form class="toolbar__search" id="searchForm" role="search"><input type="search" name="search" placeholder="Search products…" value="${AR.escapeHtml(search)}"><button type="submit" class="btn btn--small"><i class="fas fa-search"></i></button></form>
+      <select name="category" class="toolbar__select" id="catSelect"><option value="">All categories</option>${categories.map(c=>`<option value="${c}" ${category===c?'selected':''}>${AR.escapeHtml(c)}</option>`).join('')}</select>
+    </div>
+    <div class="grid grid--shop">${items.map(card).join('')}</div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+
+  items.forEach(p=>{
+    document.getElementById('add'+p.id).onsubmit=function(ev){
+      ev.preventDefault();
+      AR.addToCart({type:'product', id:p.id, name:p.name, price:p.price, image:p.image, qty:1});
+      AR.flash('success', AR.escapeHtml(p.name)+' added to cart.');
+      location='cart.html';
+    };
+  });
+  document.getElementById('catSelect').onchange=function(){ const s=new URLSearchParams(location.search); s.set('category',this.value); location='shop.html?'+s.toString(); };
+  document.getElementById('searchForm').onsubmit=function(ev){ ev.preventDefault(); const fd=new FormData(this); location='shop.html?'+new URLSearchParams(fd).toString(); };
+})();
+</script>
+</body>
+</html>

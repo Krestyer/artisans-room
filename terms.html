@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Terms of Service');
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <h1 class="page__title">Terms of Service</h1>
+    <p>Welcome to The Artisan's Room. By using this website you agree to the following terms.</p>
+    <h3>Accounts</h3><p>You must provide accurate information when registering. You are responsible for keeping your password confidential.</p>
+    <h3>Orders &amp; Payments</h3><p>All payments on this site are simulated (COD, UPI, Card) for educational purposes. No real money is processed. Orders are stored in your browser only.</p>
+    <h3>Exhibition Bookings</h3><p>Tickets are subject to availability. Bookings are confirmed only when seats are available.</p>
+    <h3>Content</h3><p>All artwork images and artist information are for demonstration purposes. Replace placeholder images with your own before production use.</p>
+    <p>Last updated: November 2026.</p>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+})();
+</script>
+</body>
+</html>

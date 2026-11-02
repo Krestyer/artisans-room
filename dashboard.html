@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="flashContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Dashboard');
+  AR.showFlashes('flashContainer');
+
+  const user = AR.currentUser();
+  if(!user){ location='signin.html'; return; }
+  const orders = (AR.get('ar_orders',[])).filter(o=>o.user_id===user.id);
+  const bookings = (AR.get('ar_bookings',[])).filter(b=>b.user_id===user.id);
+
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <header class="page__header"><h1 class="page__title">My Dashboard</h1><p class="page__subtitle">Welcome back, ${AR.escapeHtml(user.name)}.</p></header>
+    <div class="dashboard__grid">
+      <div class="dashboard__col dashboard__col--profile">
+        <div class="card profile__card"><div class="card__content"><h3>Profile</h3><p><strong>Name:</strong> ${AR.escapeHtml(user.name)}</p><p><strong>Email:</strong> ${AR.escapeHtml(user.email)}</p><p><strong>Phone:</strong> ${AR.escapeHtml(user.phone||'Not provided')}</p><p><strong>Role:</strong> ${user.role}</p><a href="cart.html" class="btn btn--outline btn--small">Cart (${AR.cartCount()})</a></div></div>
+      </div>
+      <div class="dashboard__col dashboard__col--main">
+        <div class="card"><div class="card__content"><h3>My Orders</h3>${orders.length?`<table class="data__table"><thead><tr><th>Order #</th><th>Date</th><th>Total</th><th>Method</th><th>Status</th></tr></thead><tbody>${orders.map(o=>`<tr><td>#${String(o.id).padStart(6,'0')}</td><td>${new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</td><td>${AR.fmtPrice(o.total_amount)}</td><td>${o.payment_method}</td><td><span class="badge badge--${o.status.toLowerCase()}">${o.status}</span></td></tr>`).join('')}</tbody></table>`:'<p class="text-muted">No orders yet.</p>'}</div></div>
+        <div class="card"><div class="card__content"><h3>My Exhibition Bookings</h3>${bookings.length?`<table class="data__table"><thead><tr><th>Exhibition</th><th>Date</th><th>Tickets</th><th>Amount</th><th>Status</th></tr></thead><tbody>${bookings.map(b=>{const ex=SEED.exhibitions.find(x=>x.id===b.exhibition_id);return `<tr><td>${AR.escapeHtml(ex?ex.name:'')}</td><td>${new Date(ex?ex.exhibition_date:'').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</td><td>${b.tickets}</td><td>${AR.fmtPrice(b.total_amount)}</td><td><span class="badge badge--${b.status.toLowerCase()}">${b.status}</span></td></tr>`;}).join('')}</tbody></table>`:'<p class="text-muted">No exhibition bookings yet.</p>'}</div></div>
+      </div>
+    </div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+})();
+</script>
+</body>
+</html>

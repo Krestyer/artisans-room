@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exhibitions – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Exhibitions');
+
+  function card(e){
+    return `<article class="card card--exhibition reveal"><div class="card__image"><img src="${AR.imageUrl(e.image,'exhibitions')}" alt="${AR.escapeHtml(e.name)}" loading="lazy"><span class="card__badge">${new Date(e.exhibition_date).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span></div><div class="card__content"><h3 class="card__title">${AR.escapeHtml(e.name)}</h3><p class="card__meta"><i class="fas fa-calendar"></i> ${new Date(e.exhibition_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</p><p class="card__meta"><i class="fas fa-map-marker-alt"></i> ${AR.escapeHtml(e.venue)}</p><p class="card__price">${AR.fmtPrice(e.ticket_price)} per ticket</p><p class="card__excerpt">${AR.truncate(e.description,90)}</p><p class="text-muted small">Seats available: ${e.available_seats}/${e.total_seats}</p><a href="exhibition.html?id=${e.id}" class="btn btn--small btn--outline">${AR.isLoggedIn()?'Book Tickets':'Sign In to Book'}</a></div></article>`;
+  }
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <header class="page__header"><h1 class="page__title">Upcoming Exhibitions</h1><p class="page__subtitle">Book tickets and experience art in person at galleries across India.</p></header>
+    <div class="grid grid--exhibitions">${SEED.exhibitions.map(card).join('')}</div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+})();
+</script>
+</body>
+</html>

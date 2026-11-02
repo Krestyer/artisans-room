@@ -1,0 +1,83 @@
+/**
+ * admin.css – Admin panel styles for The Artisan's Room.
+ */
+
+:root {
+    --admin-bg: #f4f1ea;
+    --admin-sidebar: #2d2d2d;
+    --admin-surface: #ffffff;
+    --admin-text: #2d2d2d;
+    --admin-text-light: #666666;
+    --admin-gold: #d4a373;
+    --admin-gold-dark: #b8862f;
+    --admin-border: #e8e0d4;
+    --admin-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    --radius: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body.admin { font-family: 'Poppins', sans-serif; background: var(--admin-bg); color: var(--admin-text); }
+
+.admin__wrapper { display: flex; min-height: 100vh; }
+
+.admin__sidebar {
+    width: 240px;
+    background: var(--admin-sidebar);
+    color: #fff;
+    position: fixed;
+    height: 100vh;
+    padding: 1.5rem 1rem;
+    z-index: 100;
+}
+.admin__sidebar h2 { font-family: 'Playfair Display', serif; font-size: 1.35rem; margin-bottom: 2rem; color: var(--admin-gold); }
+.admin__sidebar ul { list-style: none; }
+.admin__sidebar li { margin-bottom: 0.5rem; }
+.admin__sidebar a { color: #ccc; text-decoration: none; font-size: 0.9rem; padding: 0.5rem 0.75rem; display: block; border-radius: 6px; transition: 0.2s; }
+.admin__sidebar a:hover, .admin__sidebar a.active { background: rgba(212,163,115,0.15); color: #fff; }
+
+.admin__main { flex: 1; margin-left: 240px; padding: 2rem; width: calc(100% - 240px); }
+
+.admin__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+.admin__header h1 { font-family: 'Playfair Display', serif; font-size: 1.75rem; }
+.admin__btn { background: var(--admin-gold-dark); color: #fff; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; }
+.admin__btn:hover { background: var(--admin-gold); }
+
+.admin__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+.admin__stat { background: var(--admin-surface); padding: 1.25rem; border-radius: var(--radius); box-shadow: var(--admin-shadow); display: flex; justify-content: space-between; align-items: center; }
+.admin__stat .stat__num { font-size: 1.75rem; font-weight: 700; color: var(--admin-gold-dark); }
+.admin__stat .stat__label { font-size: 0.85rem; color: var(--admin-text-light); }
+
+table.admin__table { width: 100%; border-collapse: collapse; background: var(--admin-surface); border-radius: var(--radius); overflow: hidden; box-shadow: var(--admin-shadow); margin-bottom: 2rem; }
+table.admin__table th, table.admin__table td { padding: 0.875rem 1rem; border-bottom: 1px solid var(--admin-border); text-align: left; font-size: 0.9rem; }
+table.admin__table th { background: #f6f3ee; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; color: var(--admin-text-light); }
+table.admin__table tr:hover { background: #faf8f3; }
+
+.form--admin { max-width: 650px; background: var(--admin-surface); padding: 2rem; border-radius: var(--radius); box-shadow: var(--admin-shadow); }
+.form--admin .form__group { margin-bottom: 1.25rem; }
+.form--admin .form__label { display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.9rem; }
+.form--admin .form__input, .form--admin .form__select, .form--admin textarea { width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--admin-border); background: #fff; font-family: inherit; }
+.form--admin .form__input:focus { outline: none; border-color: var(--admin-gold-dark); }
+.form--admin .form__row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.form--admin .form__col { flex: 1; min-width: 200px; }
+.form--admin img.preview { max-width: 200px; margin-top: 0.5rem; border-radius: 6px; border: 1px solid var(--admin-border); display: block; }
+
+.btn--admin { padding: 0.6rem 1rem; border-radius: 6px; border: none; font-weight: 600; font-size: 0.85rem; cursor: pointer; margin-right: 0.5rem; }
+.btn--admin--save { background: var(--admin-gold-dark); color: #fff; }
+.btn--admin--save:hover { background: var(--admin-gold); }
+.btn--admin--delete { background: #b32323; color: #fff; }
+.btn--admin--delete:hover { background: #9e1b1b; }
+.btn--admin--edit { background: #2a69ac; color: #fff; }
+.btn--admin--edit:hover { background: #1f5388; }
+
+.admin__empty { text-align: center; padding: 3rem; color: var(--admin-text-light); }
+
+.delete__confirm { display: inline-block; margin-left: 0.5rem; font-size: 0.85rem; color: #b32323; cursor: pointer; }
+.delete__confirm:hover { text-decoration: underline; }
+
+@media (max-width: 900px) {
+    .admin__sidebar { position: fixed; transform: translateX(-100%); transition: 0.3s; z-index: 200; }
+    .admin__sidebar.open { transform: translateX(0); }
+    .admin__main { margin-left: 0; width: 100%; padding: 1rem; }
+    .admin__btn-toggle { display: block; }
+}

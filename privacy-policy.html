@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'Privacy Policy');
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <h1 class="page__title">Privacy Policy</h1>
+    <p>The Artisan's Room respects your privacy. This policy explains what information we collect and how we use it.</p>
+    <h3>Information we collect</h3><ul>
+      <li>Account details: name, email, phone (provided during sign-up).</li>
+      <li>Order and booking details: shipping address, payment method (simulated – no real card numbers are stored).</li>
+      <li>Contact form submissions: name, email, subject, message.</li>
+    </ul>
+    <h3>How we use your information</h3><ul>
+      <li>To create and manage your account.</li>
+      <li>To process orders, payments (simulated), and exhibition bookings.</li>
+      <li>To respond to your contact messages.</li>
+    </ul>
+    <h3>Data security</h3><p>This static demo stores data in your browser's localStorage only. No data is sent to a server.</p>
+    <p>Last updated: November 2026.</p>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<style>
+body.admin{background:#f4f1ea;}
+.admin-login{max-width:380px;margin:6rem auto;background:#fff;padding:2.5rem 2rem;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.06);}
+.admin-login h1{font-family:'Playfair Display',serif;text-align:center;margin-bottom:0.5rem;color:#2d2d2d;}
+.admin-login p{text-align:center;color:#666;margin-bottom:1.75rem;font-size:0.95rem;}
+.form-group{margin-bottom:1.25rem;}
+.form-group label{display:block;margin-bottom:0.4rem;font-weight:600;font-size:0.9rem;color:#2d2d2d;}
+.form-group input{width:100%;padding:0.75rem 1rem;border-radius:6px;border:1px solid #e8e0d4;background:#fff;font-family:inherit;}
+.btn-admin-login{width:100%;padding:0.85rem;border-radius:6px;border:none;background:#b8862f;color:#fff;font-weight:600;font-size:1rem;cursor:pointer;}
+.btn-admin-login:hover{background:#d4a373;}
+.login-hint{text-align:center;margin-top:1.25rem;font-size:0.85rem;color:#666;}
+.login-hint code{background:#f6f3ee;padding:0.15rem 0.4rem;border-radius:4px;}
+.err{background:#fdecea;border:1px solid #f5c6c6;color:#b32323;padding:0.75rem;border-radius:8px;margin-bottom:1rem;font-size:0.9rem;}
+</style>
+</head>
+<body class="admin">
+<div class="admin-login">
+  <div id="flashBox"></div>
+  <h1>Admin Login</h1>
+  <p>Sign in to manage the gallery.</p>
+  <form id="adminForm" novalidate>
+    <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="admin@artisansroom.com" required></div>
+    <div class="form-group"><label>Password</label><input type="password" name="password" placeholder="••••••••" required></div>
+    <button type="submit" class="btn-admin-login">Sign In</button>
+  </form>
+  <p class="login-hint">Default admin: <code>admin@artisansroom.com</code> / <code>Admin@123</code></p>
+</div>
+<script>
+(function(){
+  const users = JSON.parse(localStorage.getItem('ar_users')||'[]');
+  const box=document.getElementById('flashBox');
+  document.getElementById('adminForm').onsubmit=function(ev){
+    ev.preventDefault();
+    const email=this.elements['email'].value.trim();
+    const pass=this.elements['password'].value;
+    const u = users.find(x=>x.email===email && x.role==='admin');
+    if(!u || u.password!==pass){ box.innerHTML='<div class="err">Invalid admin email or password.</div>'; return; }
+    localStorage.setItem('ar_session', JSON.stringify(u));
+    location='index.html';
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us – The Artisan's Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="headerContainer"></div><div id="mainContainer"></div><div id="footerContainer"></div>
+<script src="assets/js/common.js"></script>
+<script>
+(function(){
+  const header=document.getElementById('headerContainer');
+  const main=document.getElementById('mainContainer');
+  const footer=document.getElementById('footerContainer');
+  AR.renderHeader(header,'About Us');
+  main.innerHTML=`
+  <section class="section"><div class="container">
+    <h1 class="page__title">About Us</h1>
+    <div class="about__grid">
+      <div class="about__col">
+        <h2>Our Story</h2>
+        <p>The Artisan's Room is an online art gallery created as a final-year TYBSc Computer Science project. Our mission is to bring Indian folk and contemporary art – Warli, Gond, Madhubani, Mandala, Landscape and Abstract – closer to art lovers everywhere.</p>
+        <p>We provide a platform for artists to showcase their work, for visitors to browse and buy artworks, book exhibition tickets, learn through tutorials, and shop for art-inspired products.</p>
+      </div>
+      <div class="about__col">
+        <h2>Mission</h2>
+        <ul class="checklist">
+          <li>Promote Indian folk and contemporary artists.</li>
+          <li>Make art accessible and affordable to everyone.</li>
+          <li>Support emerging creators with a dedicated online gallery.</li>
+          <li>Offer a safe, simple buying experience with simulated payment options.</li>
+        </ul>
+      </div>
+    </div>
+    <h2 class="page__title" style="margin-top:2rem;">Team</h2>
+    <div class="team__grid">
+      <div class="card team__card"><div class="card__content"><h3>Vishal Santosh Shukla</h3><p class="team__role">Student Developer</p><p>TYBSc Computer Science final-year project. Built the gallery with HTML/CSS/JS for Vercel deployment.</p></div></div>
+      <div class="card team__card"><div class="card__content"><h3>Mrs. Mayra Lachhani</h3><p class="team__role">Project Guide</p><p>S.S.T College of Arts &amp; Commerce, Ulhasnagar.</p></div></div>
+    </div>
+  </div></section>
+  `;
+  AR.renderFooter(footer);
+})();
+</script>
+</body>
+</html>
